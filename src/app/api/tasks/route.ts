@@ -7,8 +7,21 @@ export async function GET() {
   return NextResponse.json(tasks);
 }
 
-export function POST(resquest: NextRequest) {
-  return NextResponse.json({
-    message: "creando tarea",
-  });
+export async function POST(resquest: NextRequest) {
+  const data = await resquest.json();
+
+  try {
+    const task = await prisma.task.create({
+      data: {
+        title: data.title,
+        description: data.description,
+      },
+    });
+
+    return NextResponse.json(task);
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(error.message, { status: 500 });
+    }
+  }
 }
