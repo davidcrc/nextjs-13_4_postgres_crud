@@ -21,3 +21,9 @@ npx prisma init
 ```bash
 npx prisma migrate dev --name init
 ```
+
+### React hook form
+
+```bash
+npm i react-hook-form
+```
