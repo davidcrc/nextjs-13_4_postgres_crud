@@ -13,3 +13,7 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+![alt text for screen readers](/resources/Screenshot_2023-08-07_1.png "Screen1")
+
+![alt text for screen readers](/resources/Screenshot_2023-08-07_2.png "Screen2")
