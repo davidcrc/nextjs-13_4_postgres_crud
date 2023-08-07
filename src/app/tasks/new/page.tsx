@@ -21,11 +21,21 @@ const FormPage = () => {
     },
   });
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log("dd", data);
+  const getTask = async () => {
+    try {
+      const res = await fetch(`/api/tasks/${params.id}`, {});
 
-    setFocus("title");
+      const data = await res.json();
+      reset({
+        title: data.title,
+        description: data.description || "",
+      });
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
 
+  const createTask = async (data: any) => {
     try {
       await fetch("/api/tasks", {
         method: "POST",
@@ -42,6 +52,38 @@ const FormPage = () => {
     } catch (error) {
       console.log("err", error);
     }
+  };
+
+  const updateTask = async (data: any) => {
+    try {
+      await fetch(`/api/tasks/${params.id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      reset();
+
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log("dd", data);
+
+    if (params.id) {
+      updateTask(data);
+
+      return;
+    }
+
+    createTask(data);
+    setFocus("title");
   });
 
   const handleDelete = async () => {
@@ -51,10 +93,10 @@ const FormPage = () => {
         await fetch(`/api/tasks/${params.id}`, {
           method: "DELETE",
         });
-      }
 
-      router.push("/");
-      router.refresh();
+        router.push("/");
+        router.refresh();
+      }
     } catch (error) {
       console.log("err", error);
     }
@@ -62,9 +104,9 @@ const FormPage = () => {
 
   useEffect(() => {
     if (params.id) {
-      // TODO: reset form values with data
+      getTask();
     }
-  }, [params.id, reset]);
+  }, [params.id]);
 
   return (
     <form
@@ -106,7 +148,7 @@ const FormPage = () => {
           className="bg-green-600 hover:bg-green-700 border-2 w-fit px-4 py-2 rounded-lg my-4 "
           disabled={!!errors.title?.message}
         >
-          Save
+          {params.id ? "Update" : "Save"}
         </button>
       </div>
     </form>
